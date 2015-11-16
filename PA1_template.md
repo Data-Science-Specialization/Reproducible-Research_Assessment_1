@@ -25,11 +25,11 @@ dailyActivity <- group_by(activity, date) %>%
 dailyMean <- mean(dailyActivity$daysteps, na.rm=TRUE)
 dailyMedian <- median(dailyActivity$daysteps, na.rm=TRUE)
 ```
-The mean total number of steps taken per day is around 10766.19, while the mean is 10765. Here is the histogram of the total number of steps taken per day:
+The mean total number of steps taken per day is around **10766.19**, while the mean is **10765**. Here is the histogram of the total number of steps taken per day:
 
 
 ```r
-ggplot(dailyActivity, aes(daysteps)) + geom_histogram(binwidth = 1000) + 
+ggplot(dailyActivity, aes(daysteps)) + geom_histogram(binwidth = 2000) + 
     labs(x = "Steps") + labs(y = "Count")
 ```
 
@@ -55,16 +55,16 @@ ggplot(intervalActivity, aes(interval, meanInterval)) + geom_line() +
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
-The red vertial line shows that the interval with the highest average activity is the interval number 835.  
+The red vertial line shows that the interval with the highest average activity is the interval number **835**.  
 
 ## Imputing missing values
 
 ```r
 missing <- sum(is.na(activity$steps))
 ```
-The total number of missing values in the dataset is 2304.
+The total number of missing values in the dataset is **2304**.
 
-Substitute missing values with averages for a given interval and store in a new variable.
+Substitute missing values with averages for a given time interval and store in a new *imputeSteps* variable.
 
 ```r
 imputedActivity <- group_by(activity, interval) %>%
@@ -79,11 +79,11 @@ dailyActivityNew <- group_by(imputedActivity, date) %>%
 dailyMeanNew <- mean(dailyActivityNew$daysteps, na.rm=TRUE)
 dailyMedianNew <- median(dailyActivityNew$daysteps, na.rm=TRUE)
 ```
-The mean total number of steps taken per day is around 10766.19, while the mean is 10766.19. Here is the histogram of the total number of steps taken per day:
+The mean total number of steps taken per day is around **10766.19**, while the median is **10766.19**. Here is the histogram of the total number of steps taken per day:
 
 
 ```r
-ggplot(dailyActivityNew, aes(daysteps)) + geom_histogram(binwidth = 1000) + 
+ggplot(dailyActivityNew, aes(daysteps)) + geom_histogram(binwidth = 2000) + 
     labs(x = "Steps") + labs(y = "Count")
 ```
 
@@ -117,4 +117,4 @@ ggplot(meanIntActivity, aes(interval, intMean)) + geom_line() +
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
   
-The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and the pace is slower. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted in front of the computer.
+The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and with less activity. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted in front of the computer.
