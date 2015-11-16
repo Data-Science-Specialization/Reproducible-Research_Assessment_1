@@ -8,19 +8,20 @@
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(tidyr))
 activity <- unz("activity.zip", "activity.csv") %>%
-    read.csv() %>%          #Read data from .csv file
-    tbl_df()                #Wrap data frame for easy processing
-activity$date <- ymd(activity$date)     #Convert date factors into time class
+    read.csv() %>%
+    tbl_df() %>%
+    mutate(date=ymd(date)) %>%
+    mutate(dayofweek = ifelse((wday(date) == 1 | wday(date) == 7),'weekend','weekday'))
 ```
 
 ## What is mean total number of steps taken per day?
 To calculate these stats use the following code, which groups the data by date and then finds the total number of steps in a given day, subsequently calculating the mean and median:
 
 ```r
-activity <- group_by(activity, date)    #Group by date for easy daily stats
-dailyActivity <- summarise(activity, daysteps=sum(steps))
-activity <- ungroup(activity)           #Ungroup for further processing
+dailyActivity <- group_by(activity, date) %>%
+    summarise(daysteps=sum(steps))
 dailyMean <- mean(dailyActivity$daysteps, na.rm=TRUE)
 dailyMedian <- median(dailyActivity$daysteps, na.rm=TRUE)
 ```
@@ -38,10 +39,9 @@ ggplot(dailyActivity, aes(daysteps)) + geom_histogram(binwidth = 1000) +
 To get the activity pattern the data is re-grouped by interval and then the average number of steps in a given interval is found as well as the interval with the largest number of steps.  
 
 ```r
-activity <- group_by(activity, interval)    #Group by date for easy daily stats
-intervalActivity <- summarise(activity, meanInterval=mean(steps, na.rm=TRUE))
+intervalActivity <- group_by(activity, interval) %>%
+    summarise(meanInterval = mean(steps, na.rm=TRUE))
 maxStepInterval <- intervalActivity$interval[which.max(intervalActivity$meanInterval)]
-activity <- ungroup(activity)           #Ungroup for further processing
 ```
   
   
@@ -66,5 +66,55 @@ The total number of missing values in the dataset is 2304.
 
 Substitute missing values with averages for a given interval and store in a new variable.
 
+```r
+imputedActivity <- group_by(activity, interval) %>%
+    mutate(imputeSteps = ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))
+```
+
+To calculate new mean and median stats use the following code, which groups the data by date and then finds the total number of steps in a given day, subsequently calculating the mean and median:
+
+```r
+dailyActivityNew <- group_by(imputedActivity, date) %>%
+    summarise(daysteps=sum(imputeSteps))
+dailyMeanNew <- mean(dailyActivityNew$daysteps, na.rm=TRUE)
+dailyMedianNew <- median(dailyActivityNew$daysteps, na.rm=TRUE)
+```
+The mean total number of steps taken per day is around 10766.19, while the mean is 10766.19. Here is the histogram of the total number of steps taken per day:
+
+
+```r
+ggplot(dailyActivityNew, aes(daysteps)) + geom_histogram(binwidth = 1000) + 
+    labs(x = "Steps") + labs(y = "Count")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+
+Imputing new values had little effect on mean and median, while clearly the histogram now shows that there are more steps in each interval, all of these are as expected.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+Imputed activity data already has additional dayofweek column, thus :
+
+```r
+weekdayActivity <- group_by(imputedActivity, interval) %>%
+    filter(dayofweek=='weekday') %>%
+    summarise(intMean=mean(imputeSteps)) %>%
+    mutate(dayofweek='weekday')
+
+weekendActivity <- group_by(imputedActivity, interval) %>%
+    filter(dayofweek=='weekend') %>%
+    summarise(intMean=mean(imputeSteps)) %>%
+    mutate(dayofweek='weekend')
+
+meanIntActivity <- bind_rows(weekdayActivity, weekendActivity)
+```
+
+Here is the line graph of the weekend and weekday activity patterns:
+
+```r
+ggplot(meanIntActivity, aes(interval, intMean)) + geom_line() + 
+    labs(x = "Interval") + labs(y = "Average # of steps in interval") + facet_grid(dayofweek ~ .)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+  
+The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and the pace is slower. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted in front of the computer.
