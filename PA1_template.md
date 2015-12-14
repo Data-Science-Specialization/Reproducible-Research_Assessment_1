@@ -3,12 +3,13 @@
 
 
 ## Loading and preprocessing the data
+Read in the data, convert it into a format easy to work with and append new factor column.
 
 ```r
 suppressPackageStartupMessages(library(dplyr))
-suppressPackageStartupMessages(library(ggplot2))
-suppressPackageStartupMessages(library(lubridate))
-suppressPackageStartupMessages(library(tidyr))
+library(ggplot2)
+library(lubridate)
+library(tidyr)
 activity <- unz("activity.zip", "activity.csv") %>%
     read.csv() %>%
     tbl_df() %>%

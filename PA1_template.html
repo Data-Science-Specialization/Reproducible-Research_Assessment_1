@@ -66,10 +66,11 @@ img {
 
 <div id="loading-and-preprocessing-the-data" class="section level2">
 <h2>Loading and preprocessing the data</h2>
+<p>Read in the data, convert it into a format easy to work with and append new factor column.</p>
 <pre class="r"><code>suppressPackageStartupMessages(library(dplyr))
-suppressPackageStartupMessages(library(ggplot2))
-suppressPackageStartupMessages(library(lubridate))
-suppressPackageStartupMessages(library(tidyr))
+library(ggplot2)
+library(lubridate)
+library(tidyr)
 activity &lt;- unz(&quot;activity.zip&quot;, &quot;activity.csv&quot;) %&gt;%
     read.csv() %&gt;%
     tbl_df() %&gt;%

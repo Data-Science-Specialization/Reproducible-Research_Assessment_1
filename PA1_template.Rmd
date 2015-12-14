@@ -12,11 +12,12 @@ opts_chunk$set(echo = TRUE)
 
 
 ## Loading and preprocessing the data
+Read in the data, convert it into a format easy to work with and append a weekday factor column.
 ```{r results='hide'}
 suppressPackageStartupMessages(library(dplyr))
-suppressPackageStartupMessages(library(ggplot2))
-suppressPackageStartupMessages(library(lubridate))
-suppressPackageStartupMessages(library(tidyr))
+library(ggplot2)
+library(lubridate)
+library(tidyr)
 activity <- unz("activity.zip", "activity.csv") %>%
     read.csv() %>%
     tbl_df() %>%
@@ -107,4 +108,4 @@ ggplot(meanIntActivity, aes(interval, intMean)) + geom_line() +
     labs(x = "Interval") + labs(y = "Average # of steps in interval") + facet_grid(dayofweek ~ .)
 ```
   
-The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and with less activity. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted in front of the computer.
+The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and with less activity. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted.
