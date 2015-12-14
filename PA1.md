@@ -3,7 +3,7 @@
 
 
 ## Loading and preprocessing the data
-Read in the data, convert it into a format easy to work with and append new factor column.
+Read in the data, convert it into a format easy to work with and append a weekday factor column.
 
 ```r
 suppressPackageStartupMessages(library(dplyr))
@@ -34,7 +34,7 @@ ggplot(dailyActivity, aes(daysteps)) + geom_histogram(binwidth = 2000) +
     labs(x = "Steps") + labs(y = "Count")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-3-1.png) 
 
 ## What is the average daily activity pattern?
 To get the activity pattern the data is re-grouped by interval and then the average number of steps in a given interval is found as well as the interval with the largest number of steps.  
@@ -54,7 +54,7 @@ ggplot(intervalActivity, aes(interval, meanInterval)) + geom_line() +
     geom_vline(xintercept = maxStepInterval, colour="red")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-5-1.png) 
 
 The red vertial line shows that the interval with the highest average activity is the interval number **835**.  
 
@@ -88,7 +88,7 @@ ggplot(dailyActivityNew, aes(daysteps)) + geom_histogram(binwidth = 2000) +
     labs(x = "Steps") + labs(y = "Count")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-9-1.png) 
 
 Imputing new values had little effect on mean and median, while clearly the histogram now shows that there are more steps in each interval, all of these are as expected.
 
@@ -116,6 +116,6 @@ ggplot(meanIntActivity, aes(interval, intMean)) + geom_line() +
     labs(x = "Interval") + labs(y = "Average # of steps in interval") + facet_grid(dayofweek ~ .)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-11-1.png) 
   
-The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and with less activity. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted in front of the computer.
+The two key differences that are immediately obvious is that on the weekends the activity is low early in the day, most likely because the person starts the weekend days later and with less activity. On the other hand on average there's a higher number of steps taken during the course of the day, that's likely because on the weekend there's no need to sit in the office and the person is more active physically instead of being mostly sitted.
